@@ -1,6 +1,29 @@
 <script setup>
-import { onMounted } from 'vue';
+import { ref, watch, onMounted, nextTick } from 'vue';
+import { useRoute } from 'vue-router';
 
+const isHome = ref(false);
+const isMenu = ref(false);
+
+const route = useRoute(); // Get the current route
+
+// Watch for route changes and update state
+watch(
+  () => route.path, // Watching the path of the current route
+  async (newPath) => {
+    if (newPath === '/') {
+      isHome.value = true;
+      isMenu.value = false;
+    } else if (newPath === '/menu') {
+      isMenu.value = true;
+      isHome.value = false;
+    }
+
+    await nextTick(); // Wait for DOM updates
+    feather.replace(); // Replace icons after DOM updates
+  },
+  { immediate: true } // Run on initial load
+);
 
 onMounted(() => {
   feather.replace();
@@ -9,7 +32,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <nav class="navbar">
+    <nav v-if="isHome" class="navbar">
       <a href="/" class="navbar-logo">Pillar<span>Tasty</span></a>
 
       <div class="navbar-nav">
@@ -17,6 +40,22 @@ onMounted(() => {
         <a href="#about"> tentang kami </a>
         <a href="/menu"> menu </a>
         <a href="#contact"> kontak </a>
+      </div>
+
+      <div class="navbar-extra">
+        <a href="" id="search"><i data-feather="search"></i></a>
+        <a href="/menu" id="shopping-cart"><i data-feather="shopping-cart"></i></a>
+      </div>
+    </nav>
+
+    <nav v-if="isMenu" class="navbar">
+      <a href="/" class="navbar-logo">Pillar<span>Tasty</span></a>
+
+      <div class="navbar-nav">
+        <a href="/"> Home </a>
+        <!-- <a href="#about"> tentang kami </a> -->
+        <!-- <a href="/menu"> menu </a> -->
+        <!-- <a href="#contact"> kontak </a> -->
       </div>
 
       <div class="navbar-extra">
