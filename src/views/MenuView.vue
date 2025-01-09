@@ -1,35 +1,60 @@
-<script setup> 
-import { ref } from 'vue';
+<script setup>
+import { ref, computed } from 'vue';
 
-const foods = ref(null);
-// [tahuBakso, gyoza, siomay, lumpiaKulit, lumpiaAyam, sempolAyam, tahuWalik, odeng]
- 
- function masukkanMakananKeOrder(makanan){
-    const getFoods = JSON.parse(localStorage.getItem('food'));
-        if(!getFoods){
-            localStorage.setItem('food', JSON.stringify([{id: makanan, count: 1}]));
-            foods.value = JSON.parse(localStorage.getItem('food'));
-            return
-        }
-        const findFoods = getFoods.find((item)=>{
-        return item.id === makanan
-        })
-        if(!findFoods){
-            getFoods.push({id: makanan, count: 1});
-            localStorage.setItem('food', JSON.stringify(getFoods))
-            foods.value = ref([JSON.parse(localStorage.getItem('food'))]);
-            return
-        }
-        findFoods.count += 1;
-        localStorage.setItem('food', JSON.stringify(getFoods));
-        foods.value = ref([JSON.parse(localStorage.getItem('food'))]);
-        return
-    }
+const foods = ref([null]);
+const order = ref(false);
+
+function checkout() {
+  order.value = false;
+  localStorage.removeItem('food');
+}
+
+// Add food to the order
+function masukkanMakananKeOrder(food, price, pic) {
+  const getFoods = JSON.parse(localStorage.getItem('food'));
+  if (!getFoods) {
+    localStorage.setItem('food', JSON.stringify([{ foodtype: food, price: price, pic: pic, count: 1 }]));
+    foods.value = JSON.parse(localStorage.getItem('food'));
+    order.value = true;
+    return;
+  }
+
+  const findFoods = getFoods.find((item) => item.foodtype === food);
+  if (!findFoods) {
+    getFoods.push({ foodtype: food, price: price, pic: pic, count: 1 });
+    localStorage.setItem('food', JSON.stringify(getFoods));
+    foods.value = JSON.parse(localStorage.getItem('food'));
+    order.value = true;
+    return;
+  }
+
+  findFoods.count += 1;
+  localStorage.setItem('food', JSON.stringify(getFoods));
+  foods.value = JSON.parse(localStorage.getItem('food'));
+  order.value = true;
+}
+
+// Compute the subtotal
+const subtotal = computed(() => {
+  return foods.value.reduce((total, food) => total + (food.price * food.count), 0);
+});
+
+// Compute the tax (10%)
+const tax = computed(() => {
+  return subtotal.value * 0.1;
+});
+
+// Compute the total (subtotal + tax + delivery fee)
+const total = computed(() => {
+  const deliveryFee = 5000; // Delivery fee
+  return subtotal.value + tax.value + deliveryFee;
+});
+
 </script>
 
 <template>
   <body>
-    <div class="dashboard" v-if="foods == null">
+    <div class="dashboard" v-if="!order">
           <div class="dashboard-banner">
                <img src="../components/images/images-banner-2.jpg">
                <div class="banner-promo">
@@ -49,56 +74,56 @@ const foods = ref(null);
         </div>
 
         <div class="dashboard-content">
-            <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder(1), console.log(foods.value)">
+            <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('tahu bakso isi 5', 15000, '../components/img/tahu.jpg')">
                 <img class="card-images" src="../components/img/tahu.jpg">
                 <div class="card-detail">
                      <h4>Tahu Bakso isi 5 <span>RP 15000 </span></h4>
                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                  </div>
             </div>
-           <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder(2)">
+           <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('gyoza isi 5', 15000, '../components/img/gyioza.jpg')">
                 <img class="card-images" src="../components/img/gyioza.jpg">
                 <div class="card-detail">
                      <h4>Gyoza isi 5 <span>RP 15000 </span></h4>
                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                  </div>
             </div>
-            <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder(3)">
+            <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('siomay goreng isi 10', 20000, '../components/img/IMG_20250108_125103.jpg')">
                  <img class="card-images" src="../components/img/IMG_20250108_125103.jpg">
                  <div class="card-detail">
                      <h4>Siomay Goreng isi 10 <span>RP 20000 </span></h4>
                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                   </div>
             </div>
-                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder(4)">
+                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('lumpia kulit tahu isi 5', 15000, '../components/img/lumpia.jpg')">
                   <img class="card-images" src="../components/img/lumpia.jpg">
                   <div class="card-detail">
                      <h4>Lumpia Kulit Tahu isi 5 <span>RP 15000 </span></h4>
                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                  </div>
             </div>
-                 <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder(5)">
+                 <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('lumpia ayam isi 10', 30000, '../components/img/IMG_20250108_130259.jpg')">
                  <img class="card-images" src="../components/img/IMG_20250108_130259.jpg">
                  <div class="card-detail">
                      <h4>Lumpia Ayam isi 10 <span>RP 30000</span></h4>
                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                  </div>
             </div>
-                 <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder(6)">
+                 <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('sempol ayam isi 10', 20000, '../components/img/IMG_20250108_125006.jpg')">
                  <img class="card-images" src="../components/img/IMG_20250108_125006.jpg">
                  <div class="card-detail">
                      <h4>Sempol Ayam isi 10 <span>RP 20000 </span></h4>
                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                  </div>
             </div>
-                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder(7)">
+                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('tahu walik isi 10', 20000, '../components/img/IMG_20250108_131446.jpg')">
                   <img class="card-images" src="../components/img/IMG_20250108_131446.jpg">
                   <div class="card-detail">
                       <h4>Tahu Walik isi 10<span>RP 20000 </span></h4>
                       <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                 </div>
             </div> 
-                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder(8)">
+                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('odeng 1 cup', 15000, '../components/img/IMG_20250108_130357.jpg')">
                   <img class="card-images" src="../components/img/IMG_20250108_130357.jpg">
                   <div class="card-detail">
                       <h4>Odeng 1 cup<span>RP 15000 </span></h4>
@@ -106,8 +131,8 @@ const foods = ref(null);
                 </div>
             </div> 
         </div>
-</div>
-<div v-if="foods !== null" class="dashboard" style="padding-right:360px;">
+        </div>
+<div v-if="order" class="dashboard" style="padding-right:360px;">
     <div class="dashboard-banner">
                <img src="../components/images/images-banner-2.jpg">
                <div class="banner-promo">
@@ -127,56 +152,56 @@ const foods = ref(null);
         </div>
 
         <div class="dashboard-content">
-            <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder(1), console.log(foods.value)">
+            <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('tahu bakso isi 5', 15000, '../components/img/tahu.jpg')">
                 <img class="card-images" src="../components/img/tahu.jpg">
                 <div class="card-detail">
                      <h4>Tahu Bakso isi 5 <span>RP 15000 </span></h4>
-                     <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+                     <p class="card-time"><i class="fas fa-clock"></i>15-30 mins</p>
                  </div>
             </div>
-           <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder(2)">
+           <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('gyoza isi 5', 15000, '../components/img/gyioza.jpg')">
                 <img class="card-images" src="../components/img/gyioza.jpg">
                 <div class="card-detail">
                      <h4>Gyoza isi 5 <span>RP 15000 </span></h4>
                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                  </div>
             </div>
-            <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder(3)">
+            <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('siomay goreng isi 10', 20000, '../components/img/IMG_20250108_125103.jpg')">
                  <img class="card-images" src="../components/img/IMG_20250108_125103.jpg">
                  <div class="card-detail">
                      <h4>Siomay Goreng isi 10 <span>RP 20000 </span></h4>
                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                   </div>
             </div>
-                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder(4)">
+                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('lumpia kulit tahu isi 5', 15000, '../components/img/lumpia.jpg')">
                   <img class="card-images" src="../components/img/lumpia.jpg">
                   <div class="card-detail">
                      <h4>Lumpia Kulit Tahu isi 5 <span>RP 15000 </span></h4>
                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                  </div>
             </div>
-                 <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder(5)">
+                 <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('lumpia ayam isi 10', 30000, '../components/img/IMG_20250108_130259.jpg')">
                  <img class="card-images" src="../components/img/IMG_20250108_130259.jpg">
                  <div class="card-detail">
                      <h4>Lumpia Ayam isi 10 <span>RP 30000</span></h4>
                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                  </div>
             </div>
-                 <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder(6)">
+                 <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('sempol ayam isi 10', 20000, '../components/img/IMG_20250108_125006.jpg')">
                  <img class="card-images" src="../components/img/IMG_20250108_125006.jpg">
                  <div class="card-detail">
                      <h4>Sempol Ayam isi 10 <span>RP 20000 </span></h4>
                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                  </div>
             </div>
-                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder(7)">
+                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('tahu walik isi 10', 20000, '/components/img/IMG_20250108_131446.jpg')">
                   <img class="card-images" src="../components/img/IMG_20250108_131446.jpg">
                   <div class="card-detail">
                       <h4>Tahu Walik isi 10<span>RP 20000 </span></h4>
                       <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                 </div>
             </div> 
-                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder(8)">
+                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('odeng 1 cup', 15000, '@/components/img/IMG_20250108_130357.jpg')">
                   <img class="card-images" src="../components/img/IMG_20250108_130357.jpg">
                   <div class="card-detail">
                       <h4>Odeng 1 cup<span>RP 15000 </span></h4>
@@ -197,37 +222,20 @@ const foods = ref(null);
 
          <div>
     <div class="order-wrapper">
-        <div class="order-card">
-            <img class="order-image" src="../components/images/choco.jpg">
+        <div class="order-card" v-for="food in foods" :key="food.index">
+            <img class="order-image" :src="food.pic">
             <div class="order-detail">
-                <p>Cookies Choco Chip 
-                    isi 5</p>
-                <i class="pas fa-times"></i> <input type="text" value="1">
+                <p>{{ food.foodtype }}</p>
+                <i class="fas fa-times"></i>
+                <input type="text" :value="food.count">
             </div>
-            <h4 class="order-price">RP 12.000</h4>
-        </div>
-        <div class="order-card">
-            <img class="order-image" src="../components/images/images6.jpg">
-            <div class="order-detail">
-                <p>Siomay Mentai 
-                    isi 6</p>
-                <i class="pas fa-times"></i> <input type="text" value="2">
-            </div>
-            <h4 class="order-price">RP 6000</h4>
-        </div>
-    <div class="order-card">
-         <img class="order-image" src="../components/images/images14.jpg">
-         <div class="order-detail">
-            <p>Cookies White Chocolate isi 5</p>
-            <i class="pas fa-times"></i> <input type="text" value="1">
-       </div>
-            <h4 class="order-price">RP 12.000</h4>
+            <h4 class="order-price">RP <span>{{ food.price }}</span></h4>
         </div>
       </div>
             <hr class="divider">
     <div class="order-total">
-         <p>Subtotal <span>RP 24.000</span></p>
-         <p>Tax (10%) <span>RP 24.000</span></p>
+         <p>Subtotal <span>RP <span>{{ subtotal }}</span></span></p>
+         <p>Tax (10%) <span>RP <span>{{ tax }}</span></span></p>
          <p>Delivery Fee <span>RP 5.000</span></p>
 
      <div class="order-promo">
@@ -235,75 +243,35 @@ const foods = ref(null);
          <button class="button-promo">Find Promo</button>
       </div>
            <hr class="divider">
-           <p>Total <span>RP 30.000 </span></p>
+           <p>Total <span>RP <span>{{ total }}</span></span></p>
       </div>
-            <button class="checkout">
+            <button class="checkout" @click.prevent="checkout()">
                     Checkout
             </button>
    </div>
-   <div class="dashboard-order">
-        <h3>Order Menu</h3>
-        <div class="order-address">
-            <h4>Address Dalivery</h4>
-            <h4>Jl. Gunung Anyar Harapan ZA-25, Surabaya</h4>
-         </div>
-         <div class="order-time">
-            <span class="fas fa-clock"></span> 30mins <span class="fas fa-map-marker-alt"></span> 2km
-         </div> 
-
-
-    <div class="order-wrapper">
-        <div class="order-card">
-            <img class="order-image" src="../components/images/choco.jpg">
-            <div class="order-detail">
-                <p>Cookies Choco Chip isi 5</p>
-                <i class="pas fa-times"></i> <input type="text" value="1">
-            </div>
-            <h4 class="order-price">RP 12.000</h4>
-        </div>
-        <!-- <div class="order-card">
-            <img class="order-image" src="../components/images/images6.jpg">
-            <div class="order-detail">
-                <p>Siomay Mentai 
-                    isi 6</p>
-                <i class="pas fa-times"></i> <input type="text" value="2">
-            </div>
-            <h4 class="order-price">RP 6000</h4>
-        </div> -->
-    <!-- <div class="order-card">
-         <img class="order-image" src="../components/images/images14.jpg">
-         <div class="order-detail">
-            <p>Cookies White Chocolate isi 5</p>
-            <i class="pas fa-times"></i> <input type="text" value="1">
-       </div>
-            <h4 class="order-price">RP 12.000</h4>
-        </div> -->
-      </div>
-            <hr class="divider">
-    <div class="order-total">
-         <p>Subtotal <span>RP 24.000</span></p>
-         <p>Tax (10%) <span>RP 24.000</span></p>
-         <p>Delivery Fee <span>RP 5.000</span></p>
-
-     <div class="order-promo">
-         <input class="input-promo" type="text" placeholder="Apply Voucer">
-         <button class="button-promo">Find Promo</button>
-      </div>
-           <hr class="divider">
-           <p>Total <span>RP 30.000 </span></p>
-      </div>
-            <button class="checkout" @click.prevent="foods.value = null, console.log(foods.value)">
-                    Checkout
-            </button>
    </div>
-  </div>
-</div>
+   </div>
 </body>
 </template>
 
 <style scoped>
 * {
   font-family: "Noto Sans JP", sans-serif;
+}
+
+/* Add this to your existing styles */
+.fas {
+  font-family: "Font Awesome 5 Free"; /* Ensure the correct font is applied */
+  font-weight: 900; /* FontAwesome icons are using a heavy font-weight */
+  font-size: 1.2rem; /* Adjust the size of the icon */
+  color: #61666b; /* Or whatever color you prefer */
+}
+
+/* Add any other icon-specific styling if needed */
+.fas.fa-clock,
+.fas.fa-map-marker-alt {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 body {
@@ -442,12 +410,12 @@ p {
 .dashboard-order {
   width: 340px;
   min-height: 100%;
-  position: fixed;
+  position:fixed;
   top: 0;
   right: 0;
   padding: 0.5rem 1.5rem;
   background-color: #f6f8fa;
-  z-index: 3;
+  z-index: 9999;
 }
 
 .dashboard-order > h3 {

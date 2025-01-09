@@ -28,11 +28,11 @@
             Karena kami menggunakan daging ayam berkualitas
           </p>
           <p>
-            kami juga beredia mengirim ketempat costomer kami dengan biaya ongkir yang terjangkau
+            kami juga bersedia mengirim ke tempat customer kami dengan biaya ongkir yang terjangkau
           </p>
 
           <p>
-            Kami juga sangat ramah dengan costomer kami kami siap layani 24 jam
+            Kami juga sangat ramah dengan customer kami, kami siap layani 24 jam
           </p>
         </div>
       </div>
