@@ -5,6 +5,8 @@ import { useRoute } from 'vue-router';
 const isHome = ref(false);
 const isMenu = ref(false);
 
+const orders = localStorage.getItem('food');
+
 const route = useRoute(); // Get the current route
 
 // Watch for route changes and update state
@@ -53,6 +55,7 @@ onMounted(() => {
 
       <div class="navbar-nav">
         <a href="/"> Home </a>
+        <a v-if="orders" href="/order"> orders </a>
         <!-- <a href="#about"> tentang kami </a> -->
         <!-- <a href="/menu"> menu </a> -->
         <!-- <a href="#contact"> kontak </a> -->

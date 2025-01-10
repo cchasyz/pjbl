@@ -20,7 +20,7 @@
 
       <div class="row">
         <div class="about-img">
-          <img src="../components/IMG_20250108_130054.jpg" alt="Tentang kami" />
+          <img src="../components/img/IMG_20250108_130054.jpg" alt="Tentang kami" />
         </div>
         <div class="content">
           <h3>Kenapa memilih beli camilan di kami?</h3>

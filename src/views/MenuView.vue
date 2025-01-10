@@ -1,60 +1,31 @@
 <script setup>
-import { ref, computed } from 'vue';
 
-const foods = ref([null]);
-const order = ref(false);
+// function checkout() {
+//   order.value = false;
+//   localStorage.removeItem('food');
+// }
 
-function checkout() {
-  order.value = false;
-  localStorage.removeItem('food');
-}
-
-// Add food to the order
 function masukkanMakananKeOrder(food, price, pic) {
   const getFoods = JSON.parse(localStorage.getItem('food'));
   if (!getFoods) {
     localStorage.setItem('food', JSON.stringify([{ foodtype: food, price: price, pic: pic, count: 1 }]));
-    foods.value = JSON.parse(localStorage.getItem('food'));
-    order.value = true;
-    return;
-  }
-
-  const findFoods = getFoods.find((item) => item.foodtype === food);
-  if (!findFoods) {
-    getFoods.push({ foodtype: food, price: price, pic: pic, count: 1 });
+  } else {
+    const findFoods = getFoods.find((item) => item.foodtype === food);
+    if (!findFoods) {
+      getFoods.push({ foodtype: food, price: price, pic: pic, count: 1 });
+    } else {
+      findFoods.count += 1;
+    }
     localStorage.setItem('food', JSON.stringify(getFoods));
-    foods.value = JSON.parse(localStorage.getItem('food'));
-    order.value = true;
-    return;
   }
-
-  findFoods.count += 1;
-  localStorage.setItem('food', JSON.stringify(getFoods));
-  foods.value = JSON.parse(localStorage.getItem('food'));
-  order.value = true;
+  // Redirect to the order view after storing data
+  window.location.href = '/order';
 }
-
-// Compute the subtotal
-const subtotal = computed(() => {
-  return foods.value.reduce((total, food) => total + (food.price * food.count), 0);
-});
-
-// Compute the tax (10%)
-const tax = computed(() => {
-  return subtotal.value * 0.1;
-});
-
-// Compute the total (subtotal + tax + delivery fee)
-const total = computed(() => {
-  const deliveryFee = 5000; // Delivery fee
-  return subtotal.value + tax.value + deliveryFee;
-});
-
 </script>
 
 <template>
   <body>
-    <div class="dashboard" v-if="!order">
+    <div class="dashboard">
           <div class="dashboard-banner">
                <img src="../components/images/images-banner-2.jpg">
                <div class="banner-promo">
@@ -132,7 +103,7 @@ const total = computed(() => {
             </div> 
         </div>
         </div>
-<div v-if="order" class="dashboard" style="padding-right:360px;">
+<!-- <div class="dashboard" style="padding-right:360px;">
     <div class="dashboard-banner">
                <img src="../components/images/images-banner-2.jpg">
                <div class="banner-promo">
@@ -194,23 +165,23 @@ const total = computed(() => {
                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                  </div>
             </div>
-                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('tahu walik isi 10', 20000, '/components/img/IMG_20250108_131446.jpg')">
+                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('tahu walik isi 10', 20000, '../components/img/IMG_20250108_131446.jpg')">
                   <img class="card-images" src="../components/img/IMG_20250108_131446.jpg">
                   <div class="card-detail">
                       <h4>Tahu Walik isi 10<span>RP 20000 </span></h4>
                       <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                 </div>
             </div> 
-                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('odeng 1 cup', 15000, '@/components/img/IMG_20250108_130357.jpg')">
+                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('odeng 1 cup', 15000, '../components/img/IMG_20250108_130357.jpg')">
                   <img class="card-images" src="../components/img/IMG_20250108_130357.jpg">
                   <div class="card-detail">
                       <h4>Odeng 1 cup<span>RP 15000 </span></h4>
                       <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                 </div>
             </div> 
-        </div>
+        </div> -->
 
-        <div class="dashboard-order" v-if="foods">
+        <!-- <div class="dashboard-order" v-if="foods">
         <h3>Order Menu</h3>
         <div class="order-address">
             <h4>Address Dalivery</h4>
@@ -249,8 +220,8 @@ const total = computed(() => {
                     Checkout
             </button>
    </div>
-   </div>
-   </div>
+   </div> -->
+   <!-- </div> -->
 </body>
 </template>
 
