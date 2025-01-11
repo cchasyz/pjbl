@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router';
 
 const isHome = ref(false);
 const isMenu = ref(false);
+const isOrder = ref(false);
 
 const orders = localStorage.getItem('food');
 
@@ -16,8 +17,14 @@ watch(
     if (newPath === '/') {
       isHome.value = true;
       isMenu.value = false;
+      isOrder.value = false;
     } else if (newPath === '/menu') {
       isMenu.value = true;
+      isHome.value = false;
+      isOrder.value = false;
+    } else if(newPath === '/order'){
+      isOrder.value = true;
+      isMenu.value = false;
       isHome.value = false;
     }
 
@@ -45,12 +52,12 @@ onMounted(() => {
       </div>
 
       <div class="navbar-extra">
-        <a href="" id="search"><i data-feather="search"></i></a>
-        <a href="/menu" id="shopping-cart"><i data-feather="shopping-cart"></i></a>
+        <!-- <a href="" id="search"><i data-feather="search"></i></a> -->
+        <a href="/menu" id="shopping-cart"><i data-feather="book-open"></i></a>
       </div>
     </nav>
 
-    <nav v-if="isMenu" class="navbar">
+    <nav v-if="isMenu" class="navbar" style="background-color: #e3e3e3;">
       <a href="/" class="navbar-logo">Pillar<span>Tasty</span></a>
 
       <div class="navbar-nav">
@@ -62,8 +69,25 @@ onMounted(() => {
       </div>
 
       <div class="navbar-extra">
-        <a href="" id="search"><i data-feather="search"></i></a>
-        <a href="/menu" id="shopping-cart"><i data-feather="shopping-cart"></i></a>
+        <a href="/menu" id="search"><i data-feather="book-open"></i></a>
+        <a href="/order" id="shopping-cart"><i data-feather="shopping-cart"></i></a>
+      </div>
+    </nav>
+
+    <nav v-if="isOrder" class="navbar">
+      <a href="/" class="navbar-logo">Pillar<span>Tasty</span></a>
+
+      <div class="navbar-nav">
+        <a href="/"> Home </a>
+        <a href="/menu"> menu </a>
+        <!-- <a v-if="orders" href="/order"> orders </a> -->
+        <!-- <a href="#about"> tentang kami </a> -->
+        <!-- <a href="#contact"> kontak </a> -->
+      </div>
+
+      <div class="navbar-extra">
+        <a href="/menu" id="search"><i data-feather="book-open"></i></a>
+        <a href="/order" id="shopping-cart"><i data-feather="shopping-cart"></i></a>
       </div>
     </nav>
     <RouterView />
@@ -83,7 +107,7 @@ onMounted(() => {
 body {
   font-family: "poppins", sans-serif;
   background-color: gray;
-  min-height: 1900px;
+  /* min-height: 1900px; */
 }
 
 .navbar {
@@ -98,6 +122,12 @@ body {
   left: 0;
   right: 0;
   z-index: 999;
+}
+
+@media (max-width: 768px) {
+  .navbar .navbar-nav {
+    display: none; /* Hide navbar-nav in mobile view */
+  }
 }
 
 .navbar .navbar-logo {

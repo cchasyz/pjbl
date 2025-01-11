@@ -11,7 +11,7 @@
           Restoran spesialis snack yang menawarkan pengalaman kuliner unik dan lezat terbuat dari ayam yang berkualitas.
           Terletak di Jl Rungkut Permai VII i-6, Surabaya, restoran ini menjadi tujuan favorit bagi pecinta makanan Asia.
         </p>
-        <a href="index.html" class="cta">beli sekarang</a>
+        <a class="cta" href="/menu">beli sekarang</a>
       </main>
     </section>
 
@@ -20,7 +20,7 @@
 
       <div class="row">
         <div class="about-img">
-          <img src="../components/img/IMG_20250108_130054.jpg" alt="Tentang kami" />
+          <img src="/img/IMG_20250108_130054.jpg" alt="Tentang kami" />
         </div>
         <div class="content">
           <h3>Kenapa memilih beli camilan di kami?</h3>
@@ -60,26 +60,12 @@ body {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  background-image: url("../components/img/WhatsApp Image 2025-01-08 at 08.53.02.jpeg");
+  background-image: url("/img/WhatsApp Image 2025-01-08 at 08.53.02.jpeg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   position: relative;
   color: white;
-}
-
-.hero::after {
-  content: "";
-  display: block;
-  position: absolute;
-  width: 100%;
-  height: 30%;
-  bottom: 0;
-  /* background: linear-gradient(
-    0deg,
-    rgb(1, 1, 3, 1) 8%,
-    rgba(255, 255, 255, 0) 50%
-  ); */
 }
 
 .hero .content {
@@ -109,7 +95,7 @@ body {
   text-shadow: 1px 1px 3px rgba(1, 1, 3, 0.5);
 }
 
-.hero .content .cta {
+.cta {
   margin-top: 1rem;
   display: inline-block;
   padding: 1rem 3rem;
@@ -120,9 +106,10 @@ body {
   box-shadow: 1px 1px 3px rgba(1, 1, 3, 0.5);
 }
 
-.hero .content .cta:hover{
-  background-color: white;
-  color: black;
+.cta:hover{
+  cursor: pointer;
+  background-color: #960020;
+  transition: 350ms;
 }
 
 .about{
@@ -247,7 +234,7 @@ body {
   object-fit: cover;
 }
 
-button {
+/* button {
   margin-top: 15px;
   width: 80%;
   font-size: 2q rem;
@@ -255,5 +242,5 @@ button {
   background-color: #2f4858;
   border: 1px solid #eee;
   padding: 2rem;
-}
+} */
 </style>

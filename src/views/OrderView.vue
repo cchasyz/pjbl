@@ -8,6 +8,9 @@ onMounted(() => {
   if (getFoods) {
     orderedFoods.value = getFoods;
   }
+  orderedFoods.value.forEach(food => {
+    console.log(food.pic)
+  });
 });
 
 const subtotal = computed(() =>
@@ -38,6 +41,7 @@ function checkout() {
   alert('Order successfully checked out!');
   localStorage.removeItem('food');
   orderedFoods.value = [];
+  window.location.href = '/'
 }
 </script>
 
@@ -56,7 +60,7 @@ function checkout() {
    <div>
 <div class="order-wrapper">
   <div class="order-card" v-for="food in orderedFoods" :key="food.index">
-      <img class="order-image" :src="food.pic">
+      <img :src="food.pic" class="order-image">
       <div class="order-detail">
           <p>{{ food.foodtype }}</p>
           <i class="fas fa-times"></i>
@@ -73,10 +77,10 @@ function checkout() {
 <div class="order-total">
    <p>Subtotal <span>RP <span>{{ subtotal }}</span></span></p>
    <p>Tax (10%) <span>RP <span>{{ tax }}</span></span></p>
-   <p>Delivery Fee <span>RP 5.000</span></p>
+   <p>Delivery Fee <span>RP 5000</span></p>
 
 <div class="order-promo">
-   <input class="input-promo" type="text" placeholder="Apply Voucer">
+   <input class="input-promo" type="text" placeholder="Apply Voucher">
    <button class="button-promo">Find Promo</button>
 </div>
      <hr class="divider">
@@ -94,11 +98,6 @@ function checkout() {
   margin-top: 5rem;
 }
 .dashboard-order {
-  /* width: 340px; */
-  min-height: 100%;
-  /* position:fixed;
-  top: 0;
-  right: 0; */
   padding: 0.5rem 1.5rem;
   background-color: #f6f8fa;
   z-index: 9999;
@@ -119,12 +118,11 @@ function checkout() {
 
 .order-wrapper {
   height: 180px;
-  width: 100%;
+  width: 50%;
   overflow-y:scroll;
-  margin: 20px 0;
+  margin: 20px 0 0 25%;
+  background: rgb(227, 227, 227);
 }
-
-/* custom scroll */
 
 .order-wrapper::-webkit-scrollbar {
   width: 7px;
@@ -142,16 +140,17 @@ function checkout() {
 
 .order-card {
   display: grid;
-  grid-template-columns: 0.6fr 1fr 0.5fr;
+  grid-template-columns: 0.2fr 0.1fr 0.09fr;
+  align-items: center;
+  justify-content: center;
   padding: 10px 0;
   gap: 5px;
-  justify-content: space-around;
-  align-items: flex-start;
 }
 
 .order-image {
-   width: 70px;
-   height: 70px;
+  margin-left: 15%;
+   width: 100px;
+   height: 100px;
    object-fit: cover;
    border-radius: 15px;
 }
@@ -188,8 +187,9 @@ function checkout() {
   border: 2px solid #d5d5d5;
   border-radius: 10px;
   height: 45px;
+  width: 50%;
   padding: 0.5px;
-  margin: 5px 0 10px 0;
+  margin: 5px 0 10px 25%;
 }
 
 .input-promo {
@@ -220,7 +220,36 @@ function checkout() {
 }
 
 .checkout:hover {
-  text-transform: uppercase;
   font-weight: 600;
+  background-color: #ae0026;
+  transition: 300ms;
+}
+
+@media (max-width: 768px) {
+  *{
+    font-size: 107%;
+  }
+  .order-card{
+    grid-template-columns: 0.4fr 0.2fr 0.1fr;
+  }
+  .order-promo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f2f2f2;
+  border: 2px solid #d5d5d5;
+  border-radius: 10px;
+  height: 45px;
+  width: 100%;
+  padding: 0.5px;
+  margin: 5px 0 10px 0;
+}
+.order-wrapper {
+  height: 180px;
+  width: 100%;
+  overflow-y:scroll;
+  margin: 20px 0;
+  background: rgb(227, 227, 227);
+}
 }
 </style>

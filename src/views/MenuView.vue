@@ -1,33 +1,54 @@
 <script setup>
 
-// function checkout() {
-//   order.value = false;
-//   localStorage.removeItem('food');
-// }
-
 function masukkanMakananKeOrder(food, price, pic) {
-  const getFoods = JSON.parse(localStorage.getItem('food'));
-  if (!getFoods) {
-    localStorage.setItem('food', JSON.stringify([{ foodtype: food, price: price, pic: pic, count: 1 }]));
-  } else {
+  // Show the modal
+  const modal = document.getElementById('confirmationModal');
+  modal.style.display = 'flex';
+  document.body.classList.add('modal-open'); // Prevent body scroll
+
+  // Add event listeners to the buttons
+  document.getElementById('confirmYes').onclick = () => {
+    const getFoods = JSON.parse(localStorage.getItem('food')) || [];
     const findFoods = getFoods.find((item) => item.foodtype === food);
+
     if (!findFoods) {
       getFoods.push({ foodtype: food, price: price, pic: pic, count: 1 });
     } else {
       findFoods.count += 1;
     }
+
     localStorage.setItem('food', JSON.stringify(getFoods));
-  }
-  // Redirect to the order view after storing data
-  window.location.href = '/order';
+
+    // Redirect to the order view
+    window.location.href = '/order';
+
+    // Hide the modal
+    modal.style.display = 'none';
+    document.body.classList.remove('modal-open'); // Restore scrolling
+  };
+
+  document.getElementById('confirmNo').onclick = () => {
+    modal.style.display = 'none';
+    document.body.classList.remove('modal-open'); // Restore scrolling
+  };
 }
 </script>
 
 <template>
   <body>
+
+<div id="confirmationModal" class="modal">
+  <div class="modal-content">
+    <p>Do you want to add this item to the cart?</p>
+    <button id="confirmYes">Yes</button>
+    <button id="confirmNo">No</button>
+  </div>
+</div>
+
+
     <div class="dashboard">
           <div class="dashboard-banner">
-               <img src="../components/images/images-banner-2.jpg">
+               <img src="/images/images-banner-2.jpg">
                <div class="banner-promo">
                     <h1><span>50% OFF</span><br>
                     Tasty Food <br> On Your Hand </h1>
@@ -45,57 +66,57 @@ function masukkanMakananKeOrder(food, price, pic) {
         </div>
 
         <div class="dashboard-content">
-            <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('tahu bakso isi 5', 15000, '../components/img/tahu.jpg')">
-                <img class="card-images" src="../components/img/tahu.jpg">
+            <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('tahu bakso isi 5', 15000, '/img/tahu.jpg')">
+                <img class="card-images" src="/img/tahu.jpg">
                 <div class="card-detail">
                      <h4>Tahu Bakso isi 5 <span>RP 15000 </span></h4>
                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                  </div>
             </div>
-           <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('gyoza isi 5', 15000, '../components/img/gyioza.jpg')">
-                <img class="card-images" src="../components/img/gyioza.jpg">
+           <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('gyoza isi 5', 15000, '/img/gyioza.jpg')">
+                <img class="card-images" src="/img/gyioza.jpg">
                 <div class="card-detail">
                      <h4>Gyoza isi 5 <span>RP 15000 </span></h4>
                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                  </div>
             </div>
-            <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('siomay goreng isi 10', 20000, '../components/img/IMG_20250108_125103.jpg')">
-                 <img class="card-images" src="../components/img/IMG_20250108_125103.jpg">
+            <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('siomay goreng isi 10', 20000, '/img/IMG_20250108_125103.jpg')">
+                 <img class="card-images" src="/img/IMG_20250108_125103.jpg">
                  <div class="card-detail">
                      <h4>Siomay Goreng isi 10 <span>RP 20000 </span></h4>
                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                   </div>
             </div>
-                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('lumpia kulit tahu isi 5', 15000, '../components/img/lumpia.jpg')">
-                  <img class="card-images" src="../components/img/lumpia.jpg">
+                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('lumpia kulit tahu isi 5', 15000, '/img/lumpia.jpg')">
+                  <img class="card-images" src="/img/lumpia.jpg">
                   <div class="card-detail">
                      <h4>Lumpia Kulit Tahu isi 5 <span>RP 15000 </span></h4>
                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                  </div>
             </div>
-                 <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('lumpia ayam isi 10', 30000, '../components/img/IMG_20250108_130259.jpg')">
-                 <img class="card-images" src="../components/img/IMG_20250108_130259.jpg">
+                 <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('lumpia ayam isi 10', 30000, '/img/IMG_20250108_130259.jpg')">
+                 <img class="card-images" src="/img/IMG_20250108_130259.jpg">
                  <div class="card-detail">
                      <h4>Lumpia Ayam isi 10 <span>RP 30000</span></h4>
                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                  </div>
             </div>
-                 <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('sempol ayam isi 10', 20000, '../components/img/IMG_20250108_125006.jpg')">
-                 <img class="card-images" src="../components/img/IMG_20250108_125006.jpg">
+                 <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('sempol ayam isi 10', 20000, '/img/IMG_20250108_125006.jpg')">
+                 <img class="card-images" src="/img/IMG_20250108_125006.jpg">
                  <div class="card-detail">
                      <h4>Sempol Ayam isi 10 <span>RP 20000 </span></h4>
                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                  </div>
             </div>
-                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('tahu walik isi 10', 20000, '../components/img/IMG_20250108_131446.jpg')">
-                  <img class="card-images" src="../components/img/IMG_20250108_131446.jpg">
+                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('tahu walik isi 10', 20000, '/img/IMG_20250108_131446.jpg')">
+                  <img class="card-images" src="/img/IMG_20250108_131446.jpg">
                   <div class="card-detail">
                       <h4>Tahu Walik isi 10<span>RP 20000 </span></h4>
                       <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
                 </div>
             </div> 
-                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('odeng 1 cup', 15000, '../components/img/IMG_20250108_130357.jpg')">
-                  <img class="card-images" src="../components/img/IMG_20250108_130357.jpg">
+                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('odeng 1 cup', 15000, '/img/IMG_20250108_130357.jpg')">
+                  <img class="card-images" src="/img/IMG_20250108_130357.jpg">
                   <div class="card-detail">
                       <h4>Odeng 1 cup<span>RP 15000 </span></h4>
                       <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
@@ -103,129 +124,73 @@ function masukkanMakananKeOrder(food, price, pic) {
             </div> 
         </div>
         </div>
-<!-- <div class="dashboard" style="padding-right:360px;">
-    <div class="dashboard-banner">
-               <img src="../components/images/images-banner-2.jpg">
-               <div class="banner-promo">
-                    <h1><span>50% OFF</span><br>
-                    Tasty Food <br> On Your Hand </h1>
-               </div>
-         </div>
-
-         <h3 class="dashboard-tittle">Recommend Food For You</h3>
-         <div class="dashboard-menu">
-            <a href="#">Favorites</a>
-            <a href="#">Best Seller</a>
-            <a href="#">Near me</a>
-            <a href="#">Promotion</a>
-            <a href="#">Top Rated</a>
-            <a href="#">ALL</a>
-        </div>
-
-        <div class="dashboard-content">
-            <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('tahu bakso isi 5', 15000, '../components/img/tahu.jpg')">
-                <img class="card-images" src="../components/img/tahu.jpg">
-                <div class="card-detail">
-                     <h4>Tahu Bakso isi 5 <span>RP 15000 </span></h4>
-                     <p class="card-time"><i class="fas fa-clock"></i>15-30 mins</p>
-                 </div>
-            </div>
-           <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('gyoza isi 5', 15000, '../components/img/gyioza.jpg')">
-                <img class="card-images" src="../components/img/gyioza.jpg">
-                <div class="card-detail">
-                     <h4>Gyoza isi 5 <span>RP 15000 </span></h4>
-                     <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-                 </div>
-            </div>
-            <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('siomay goreng isi 10', 20000, '../components/img/IMG_20250108_125103.jpg')">
-                 <img class="card-images" src="../components/img/IMG_20250108_125103.jpg">
-                 <div class="card-detail">
-                     <h4>Siomay Goreng isi 10 <span>RP 20000 </span></h4>
-                     <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-                  </div>
-            </div>
-                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('lumpia kulit tahu isi 5', 15000, '../components/img/lumpia.jpg')">
-                  <img class="card-images" src="../components/img/lumpia.jpg">
-                  <div class="card-detail">
-                     <h4>Lumpia Kulit Tahu isi 5 <span>RP 15000 </span></h4>
-                     <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-                 </div>
-            </div>
-                 <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('lumpia ayam isi 10', 30000, '../components/img/IMG_20250108_130259.jpg')">
-                 <img class="card-images" src="../components/img/IMG_20250108_130259.jpg">
-                 <div class="card-detail">
-                     <h4>Lumpia Ayam isi 10 <span>RP 30000</span></h4>
-                     <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-                 </div>
-            </div>
-                 <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('sempol ayam isi 10', 20000, '../components/img/IMG_20250108_125006.jpg')">
-                 <img class="card-images" src="../components/img/IMG_20250108_125006.jpg">
-                 <div class="card-detail">
-                     <h4>Sempol Ayam isi 10 <span>RP 20000 </span></h4>
-                     <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-                 </div>
-            </div>
-                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('tahu walik isi 10', 20000, '../components/img/IMG_20250108_131446.jpg')">
-                  <img class="card-images" src="../components/img/IMG_20250108_131446.jpg">
-                  <div class="card-detail">
-                      <h4>Tahu Walik isi 10<span>RP 20000 </span></h4>
-                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-                </div>
-            </div> 
-                  <div class="dashboard-card" @click.prevent="masukkanMakananKeOrder('odeng 1 cup', 15000, '../components/img/IMG_20250108_130357.jpg')">
-                  <img class="card-images" src="../components/img/IMG_20250108_130357.jpg">
-                  <div class="card-detail">
-                      <h4>Odeng 1 cup<span>RP 15000 </span></h4>
-                      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-                </div>
-            </div> 
-        </div> -->
-
-        <!-- <div class="dashboard-order" v-if="foods">
-        <h3>Order Menu</h3>
-        <div class="order-address">
-            <h4>Address Dalivery</h4>
-            <h4>Jl. Gunung Anyar Harapan ZA-25, Surabaya</h4>
-         </div>
-         <div class="order-time">
-            <span class="fas fa-clock"></span> 30mins <span class="fas fa-map-marker-alt"></span> 2km
-         </div> 
-
-         <div>
-    <div class="order-wrapper">
-        <div class="order-card" v-for="food in foods" :key="food.index">
-            <img class="order-image" :src="food.pic">
-            <div class="order-detail">
-                <p>{{ food.foodtype }}</p>
-                <i class="fas fa-times"></i>
-                <input type="text" :value="food.count">
-            </div>
-            <h4 class="order-price">RP <span>{{ food.price }}</span></h4>
-        </div>
-      </div>
-            <hr class="divider">
-    <div class="order-total">
-         <p>Subtotal <span>RP <span>{{ subtotal }}</span></span></p>
-         <p>Tax (10%) <span>RP <span>{{ tax }}</span></span></p>
-         <p>Delivery Fee <span>RP 5.000</span></p>
-
-     <div class="order-promo">
-         <input class="input-promo" type="text" placeholder="Apply Voucer">
-         <button class="button-promo">Find Promo</button>
-      </div>
-           <hr class="divider">
-           <p>Total <span>RP <span>{{ total }}</span></span></p>
-      </div>
-            <button class="checkout" @click.prevent="checkout()">
-                    Checkout
-            </button>
-   </div>
-   </div> -->
-   <!-- </div> -->
 </body>
 </template>
 
 <style scoped>
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Fixed position to overlay the whole viewport */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  overflow: hidden; /* Prevents modal content from being scrolled out */
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 90%; /* Responsive width */
+  max-width: 400px; /* Limit for larger screens */
+  box-sizing: border-box;
+}
+
+body.modal-open {
+  overflow: hidden; /* Prevent scrolling on body when modal is active */
+}
+
+@media screen and (max-width: 768px) {
+  .modal-content {
+    width: 80%; /* Adjust modal size for mobile */
+  }
+}
+
+button {
+  margin: 20px 5px 5px 5px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button#confirmYes {
+  background-color: #28a745;
+  color: white;
+}
+button#confirmYes:hover {
+  background-color: #008d21;
+  color: white;
+  transition: 300ms;
+}
+
+button#confirmNo {
+  background-color: #dc3545;
+  color: white;
+}
+button#confirmNo:hover {
+  background-color: #c10013;
+  color: white;
+  transition: 300ms;
+}
+
 * {
   font-family: "Noto Sans JP", sans-serif;
 }
@@ -250,7 +215,7 @@ body {
   margin-top: 5rem;
   height: auto;
   color: #2d2f31;
-  background-color: rgb(255, 255, 255);
+  background-color:#b4b4b4;
 }
 
 p {
@@ -330,13 +295,14 @@ p {
   min-width: 120px;
   padding: 0.5rem;
   font-size: 0.9rem;
-  color: #2d2f31;
+  color: #000000;
   background-color: #f2f2f2;
 }
 
 .dashboard-menu > a:hover {
   background-color: #df113c;
   color: #f2f2f2;
+  transition:350ms ;
 }
 
 .dashboard-content {
@@ -347,7 +313,7 @@ p {
 }
 
 .dashboard-card {
-  background-color: #f6f8fa;
+  background-color: #d8d8d8;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   border-radius: 15px;
   position: relative;
