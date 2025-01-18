@@ -12,12 +12,13 @@ class CheckoutController extends Controller
      * Display a listing of the resource.
      */
     public function createPayment(Request $request){
+        $midtransServerKey = env('MIDTRANS_SERVER_KEY');
         $amount = $request->input('amount');
         $invoiceId = 'INV-' . time(); // Unique Invoice ID
 
         // Replace with your payment provider's endpoint and API key
         $response = Http::withHeaders([
-            'Authorization' => 'Basic ' . base64_encode('Mid-server-knl_cRX4VE52lhqwR82vNs0C' . ':'),
+            'Authorization' => 'Basic ' . base64_encode(`$midtransServerKey` . ':'),
         ])->post('https://api.sandbox.midtrans.com/v2/charge', [
             'amount' => $amount,
             'invoice_id' => $invoiceId,
