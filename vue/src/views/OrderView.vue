@@ -46,12 +46,12 @@ function checkout() {
   <div class="order-address">
       <h4>PillarTasty Address</h4>
       <h4>Jl. Gunung Anyar Harapan ZA-25, Surabaya</h4>
-      <span class="fas fa-map-marker-alt"></span> 
-  </div>
-   <!-- <div class="order-time"> -->
-      <!-- <span class="fas fa-clock"></span> 30mins  -->
       <!-- <span class="fas fa-map-marker-alt"></span>  -->
-   <!-- </div>  -->
+  </div>
+   <div class="order-time">
+      <span class="fas fa-clock"></span> Estimasi matang : 30 mins 
+      <!-- <span class="fas fa-map-marker-alt"></span>  -->
+   </div> 
 
    <div>
 <div class="order-wrapper">
