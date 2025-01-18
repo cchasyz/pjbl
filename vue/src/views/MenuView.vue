@@ -19,11 +19,23 @@ onMounted(()=>{
     skipNameInput.value = false;
   }
   const foods = ref();
-  foods = JSON.parse(localStorage.getItem('food'));
+  foods.value = JSON.parse(localStorage.getItem('food'));
   if(foods.value){
     Isicart.value = true;
   } else {
     Isicart.value = false;
+  }
+  username.value = localStorage.getItem('name');
+  if(username.value !== null){
+    const getFoods = JSON.parse(localStorage.getItem('food'));
+    const totalCount = getFoods
+      .filter(item => item.name === username.value)
+      .reduce((sum, item) => sum + parseInt(item.count, 10), 0);
+      if(totalCount !== 0){
+        foodCount.value = totalCount;
+      } else {
+        Isicart.value = false;
+      }
   }
 })
 
@@ -87,6 +99,7 @@ function masukkanMakananKeOrder(food, price, pic) {
 
     foodCount.value = totalCount;
     Isicart.value = true;
+    skipNameInput.value = true;
 
     modal.style.display = 'none';
     document.body.classList.remove('modal-open'); 
