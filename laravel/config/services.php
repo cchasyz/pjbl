@@ -18,11 +18,11 @@ return [
         'token' => env('POSTMARK_TOKEN'),
     ],
 
-    'midtrans' => [
-    'server_key' => env('SB-Mid-server-jeUgq_KGog3ohGV3Y6QkHMnB'),
-    'client_key' => env('SB-Mid-client-EsgwBSFOo4pWB5OX'),
-    'is_production' => env('MIDTRANS_IS_PRODUCTION', false), // false for sandbox
-    ],
+    // 'midtrans' => [
+    // 'server_key' => env('SB-Mid-server-jeUgq_KGog3ohGV3Y6QkHMnB'),
+    // 'client_key' => env('SB-Mid-client-EsgwBSFOo4pWB5OX'),
+    // 'is_production' => env('MIDTRANS_IS_PRODUCTION', false), // false for sandbox
+    // ],
 
 
     'ses' => [

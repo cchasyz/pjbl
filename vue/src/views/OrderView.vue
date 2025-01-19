@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue';
+import short from '@/router/axios';
 
 const orderedFoods = ref([]);
 
@@ -30,12 +31,41 @@ function updateFoodCount(food, count) {
   localStorage.setItem('food', JSON.stringify(orderedFoods.value));
 }
 
-function checkout() {
-  alert('Order successfully checked out!');
-  localStorage.removeItem('food');
-  localStorage.removeItem('name');
-  orderedFoods.value = [];
-  window.location.href = '/'
+async function checkout() {
+  try {
+    // Step 1: Get the snap token from the backend
+    const res = await short.post('/create-transaction', {
+      amount: total.value, 
+    });
+    const snapToken = res.data.snap_token;
+    if (snapToken) {
+      // Step 2: Trigger the Midtrans payment popup
+      snap.pay(snapToken, {
+        onSuccess: (result) => {
+          console.log('Payment Success:', result);
+          alert('Silahkan ambil pesanan anda sekitar 30 menit setelah pembelian');
+          localStorage.removeItem('food');
+          localStorage.removeItem('name');
+          orderedFoods.value = [];
+          window.location.href = '/';
+        },
+        onPending: (result) => {
+          console.log('Payment Pending:', result);
+          alert('Payment Pending. Please wait for the payment to be processed.');
+        },
+        onError: (result) => {
+          console.error('Payment Error:', result);
+          alert('Payment Failed. Try again.');
+        },
+      });
+    } else {
+      console.error('Failed to get Snap token');
+      alert('Error generating Snap Token. Please try again.');
+    }
+  } catch (error) {
+    console.error('Checkout Error:', error);
+    alert('An error occurred during checkout. Please try again.');
+  }
 }
 </script>
 
@@ -46,11 +76,9 @@ function checkout() {
   <div class="order-address">
       <h4>PillarTasty Address</h4>
       <h4>Jl. Gunung Anyar Harapan ZA-25, Surabaya</h4>
-      <!-- <span class="fas fa-map-marker-alt"></span>  -->
   </div>
    <div class="order-time">
       <span class="fas fa-clock"></span> Estimasi matang : 30 mins 
-      <!-- <span class="fas fa-map-marker-alt"></span>  -->
    </div> 
 
    <div>
