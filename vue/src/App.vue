@@ -46,9 +46,9 @@ onMounted(() => {
 
       <div class="navbar-nav">
         <a href="/"> Home </a>
-        <a href="#about"> tentang kami </a>
-        <a href="/menu"> menu </a>
-        <a href="#footer"> kontak </a>
+        <a href="#about"> Tentang Kami </a>
+        <a href="/menu"> Menu </a>
+        <a href="#footer"> Kontak </a>
       </div>
 
       <div class="navbar-extra">
@@ -92,7 +92,7 @@ onMounted(() => {
     </nav>
     <RouterView />
     <footer id="footer" class="footer">
-  <div class="container">
+  <div class="container" style="padding: 90px;">
     <div class="row">
       <div class="col-md-4">
         <h5 class="text-uppercase"></h5>
@@ -165,7 +165,7 @@ body {
 
 @media (max-width: 768px) {
   .navbar .navbar-nav {
-    display: none; /* Hide navbar-nav in mobile view */
+    display: none; 
   }
 }
 
@@ -223,7 +223,7 @@ body {
     /* Menata ikon sosial media ke samping */
     .footer ul {
       display: flex;
-     /* padding-left: 0;*/
+     /* padding-left: 0; */
       justify-content: center;
       align-items: center;
       margin: 45px 0;
@@ -236,8 +236,9 @@ body {
 
     /* Menambah efek saat hover */
     .footer i:hover {
-      color: #007bff; /* Ganti dengan warna hover yang diinginkan */
+      color: #df113c; /* Ganti dengan warna hover yang diinginkan */
     }
+
     .copyright-text {
       text-align: center;  /* Menempatkan teks di tengah */
       margin-top: 15px;  /* Memberikan jarak antara ikon dan teks */

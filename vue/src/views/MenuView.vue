@@ -2,7 +2,7 @@
 import short from '@/router/axios';
 import { ref, onMounted } from 'vue';
 
-const nameinput = ref('');
+const nameinput = ref(null);
 const registered = ref(false);
 const skipNameInput = ref(false);
 const username = ref('');
@@ -73,13 +73,17 @@ function masukkanMakananKeOrder(food, price, pic) {
   document.body.classList.add('modal-open'); 
 
   document.getElementById('confirmYes').onclick = async() => {
-    if(!skipNameInput){
-    if(!nameinput.value){
+    if(nameinput.value === null || nameinput.value === '' && !skipNameInput){
       alert('isi nama dahulu');
       return
-    }}
+    }
+
+    console.log('working');
+    //works
     
     await input();
+    console.log('working 2');
+    //doesnt work
     
     username.value = localStorage.getItem('name');
     const getFoods = JSON.parse(localStorage.getItem('food')) || [];

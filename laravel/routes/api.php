@@ -12,7 +12,7 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/userdata', [OrderController::class,'login']);
 
-Route::post('/payments', [CheckoutController::class, 'createPayment']);
-Route::post('/webhook', [CheckoutController::class, 'handleWebhook'])->name('payment.callback');
+// Route::post('/payments', [CheckoutController::class, 'createPayment']);
+// Route::post('/webhook', [CheckoutController::class, 'handleWebhook'])->name('payment.callback');
 
 Route::post('/create-transaction', [CheckoutController::class, 'createTransaction']);
