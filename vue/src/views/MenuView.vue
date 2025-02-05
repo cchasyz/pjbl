@@ -73,17 +73,12 @@ function masukkanMakananKeOrder(food, price, pic) {
   document.body.classList.add('modal-open'); 
 
   document.getElementById('confirmYes').onclick = async() => {
-    if(nameinput.value === null || nameinput.value === '' && !skipNameInput){
+    if(nameinput.value === null && !skipNameInput || nameinput.value === '' && !skipNameInput){
       alert('isi nama dahulu');
       return
     }
 
-    console.log('working');
-    //works
-    
     await input();
-    console.log('working 2');
-    //doesnt work
     
     username.value = localStorage.getItem('name');
     const getFoods = JSON.parse(localStorage.getItem('food')) || [];

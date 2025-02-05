@@ -17,7 +17,18 @@
       <h2><span>Tentang</span> kami</h2>
       <div class="row">
         <div class="about-img scroll-animate">
-          <img src="/img/IMG_20250108_130054.jpg" alt="Tentang kami" />
+          <Swiper 
+          @swiper="onSwiperInit"
+          :loop="true"
+          class="swiper"
+          >
+            <SwiperSlide>
+              <img src="/img/IMG_20250108_130054.jpg" alt="Tentang kami" />
+            </SwiperSlide>
+            <SwiperSlide>
+              <img src="/img/IMG_20250108_130054.jpg" alt="Tentang kami" />
+            </SwiperSlide>
+          </Swiper>
         </div>
         <div class="content scroll-animate">
           <p class="scroll-text">Selamat datang di PillarTasty! Kami adalah restoran spesialis snack yang berdedikasi memberikan pengalaman kuliner yang unik dan lezat. Dibuat dengan penuh cinta, camilan kami dirancang untuk memenuhi selera Anda, dari yang ringan hingga menggugah selera.</p>
@@ -40,9 +51,35 @@
 </template>
 
 <script setup>
-import { onMounted, onBeforeUnmount } from 'vue';
+import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import "swiper/css";
 
-// Function to check if an element is in the viewport
+const swiperRef = ref(null);
+let autoSlideInterval = null;
+
+const onSwiperInit = (swiper) => {
+  swiperRef.value = swiper;
+};
+
+const startAutoSlide = () => {
+  if (autoSlideInterval) {
+    clearInterval(autoSlideInterval);
+  }
+  autoSlideInterval = setInterval(() => {
+    if (swiperRef.value) {
+      swiperRef.value.slideNext();
+    }
+  }, 5000);
+};
+
+const stopAutoSlide = () => {
+  if (autoSlideInterval) {
+    clearInterval(autoSlideInterval);
+    autoSlideInterval = null;
+  }
+};
+
 const isElementInViewport = (el) => {
   const rect = el.getBoundingClientRect();
   return (
@@ -51,7 +88,6 @@ const isElementInViewport = (el) => {
   );
 };
 
-// Function to handle scroll and trigger animations
 const handleScroll = () => {
   const elements = document.querySelectorAll('.scroll-animate');
   elements.forEach((el) => {
@@ -60,35 +96,47 @@ const handleScroll = () => {
     }
   });
 
-  // Animate each paragraph in the About section
   const textElements = document.querySelectorAll('.scroll-text');
   textElements.forEach((el, index) => {
     if (isElementInViewport(el) && !el.classList.contains('text-animated')) {
       el.classList.add('text-animated');
-      el.style.animationDelay = `${1.5 + index * 0.5}s`; // Dynamic stagger delay
+      el.style.animationDelay = `${1.5 + index * 0.5}s`; 
     }
   });
 };
 
-// Debounced scroll listener
 let scrollTimeout;
 const debouncedScroll = () => {
   clearTimeout(scrollTimeout);
   scrollTimeout = setTimeout(handleScroll, 100);
 };
 
-// Lifecycle hooks
 onMounted(() => {
   window.addEventListener('scroll', debouncedScroll);
-  handleScroll(); // Initial check for visible elements
+  handleScroll();
+  startAutoSlide();
+  localStorage.clear('name');
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', debouncedScroll);
+  stopAutoSlide();
 });
 </script>
 
 <style scoped>
+.swiper{
+  height: 400px;
+  width: 300px;
+}
+
+@media (max-width: 768px) {
+  .swiper{
+    height: 250px;
+    width: 35rem;
+  }
+}
+
 * {
   margin: 0;
   padding: 0;
