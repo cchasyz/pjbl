@@ -26,7 +26,25 @@
               <img src="/img/IMG_20250108_130054.jpg" alt="Tentang kami" />
             </SwiperSlide>
             <SwiperSlide>
-              <img src="/img/IMG_20250108_130054.jpg" alt="Tentang kami" />
+              <img src="/img/WhatsApp Image 2025-02-05 at 10.02.00.jpeg" alt="Tentang kami" />
+            </SwiperSlide>
+            <SwiperSlide>
+              <img src="/img/WhatsApp Image 2025-02-05 at 10.02.01 (1).jpeg" alt="Tentang kami" />
+            </SwiperSlide>
+            <SwiperSlide>
+              <img src="/img/WhatsApp Image 2025-02-05 at 10.02.01 (2).jpeg" alt="Tentang kami" />
+            </SwiperSlide>
+            <SwiperSlide>
+              <img src="/img/WhatsApp Image 2025-02-05 at 10.02.02 (1).jpeg" alt="Tentang kami" />
+            </SwiperSlide>
+              <SwiperSlide>
+              <img src="/img/WhatsApp Image 2025-02-05 at 10.02.02 (2).jpeg" alt="Tentang kami" />
+            </SwiperSlide>
+              <SwiperSlide>
+              <img src="/img/WhatsApp Image 2025-02-05 at 10.02.02.jpeg" alt="Tentang kami" />
+            </SwiperSlide>
+              <SwiperSlide>
+              <img src="/img/WhatsApp Image 2025-02-05 at 10.02.03.jpeg" alt="Tentang kami" />
             </SwiperSlide>
           </Swiper>
         </div>
