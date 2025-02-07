@@ -11,6 +11,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/userdata', [OrderController::class,'login']);
+Route::get('/getMenu', [OrderController::class,'getMenu']);
 
 // Route::post('/payments', [CheckoutController::class, 'createPayment']);
 // Route::post('/webhook', [CheckoutController::class, 'handleWebhook'])->name('payment.callback');

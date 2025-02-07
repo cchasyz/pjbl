@@ -63,7 +63,47 @@
         </div>
       </div>
     </section>
-
+    <div class="komen scroll-animate">
+        <div class="comment">
+            <div class="comment-header">
+                <div class="avatar">
+                    <img src="/img/komen1.jpg" alt="Avatar">
+                </div>
+                <div class="comment-author">
+                    <span>Stalin & Voroshilov</span>
+                    <br>
+                    <span class="comment-date">2 Hari yang lalu</span>
+                </div>
+            </div>
+            <p class="comment-text">Produk ini sangat berkualitas! Saya sangat puas dengan pelayanan dan kemasannya.</p>
+        </div>
+        <div class="comment">
+            <div class="comment-header">
+                <div class="avatar">
+                    <img src="/img/komen2.jpg" alt="Avatar">
+                </div>
+                <div class="comment-author">
+                    <span>Josep Tito</span>
+                    <br>
+                    <span class="comment-date">2 Hari yang lalu</span>
+                </div>
+            </div>
+            <p class="comment-text">Melayani pelanggan dengan sangat ramah</p>
+        </div>
+        <div class="comment">
+            <div class="comment-header">
+                <div class="avatar">
+                    <img src="/img/komen3.jpg" alt="Avatar">
+                </div>
+                <div class="comment-author">
+                    <span>Rudolf Hess</span>
+                    <br>
+                    <span class="comment-date">2 Hari yang lalu</span>
+                </div>
+            </div>
+            <p class="comment-text">Pesanan matang sesuai dengan estimasi</p>
+        </div>
+    </div>
     <!-- Bisa tambahkan section lainnya seperti Menu, Contact, dll. dengan animasi yang sama -->
   </body>
 </template>
@@ -384,5 +424,82 @@ body {
   flex: 1 1 45rem;
   width: 100%;
   object-fit: cover;
+}
+
+.komen {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    /* margin-top: -5rem; */
+    flex-wrap: wrap;
+    background-color: #fff;
+}
+
+/* Komentar Styling */
+.comment {
+    background-color: #fff;
+    padding: 20px;
+    width: 100%;
+    max-width: 280px;
+    border-radius: 12px;
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    text-align: left;
+    font-family: sans-serif;
+}
+
+/* Avatar Section */
+.avatar {
+    width: 50px;
+    height:auto;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Gambar Avatar */
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Header of Comments */
+.comment-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+/* Comment Author */
+.comment-author span:first-child {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.comment-author .comment-date {
+    font-size: 14px;
+    color: #aaa;
+}
+
+/* Comment Text */
+.comment-text {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.6;
+    margin-top: 10px;
+}
+
+/* Hover Effect */
+.comment:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 </style>

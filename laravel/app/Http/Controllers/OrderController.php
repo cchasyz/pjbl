@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Menu;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -34,9 +35,12 @@ class OrderController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
+    public function getMenu(){
+        $menu = Menu::all();
+
+        return response()->json([
+            'data' => $menu
+        ]);
     }
 
     /**

@@ -6,11 +6,23 @@ const nameinput = ref(null);
 const registered = ref(false);
 const skipNameInput = ref(false);
 const username = ref('');
+const foods = ref([]);
 const selectedCategory = ref('ALL');
 const foodCount = ref();
 const Isicart = ref(false);
 
-onMounted(()=>{
+onMounted(async()=>{
+  const menu = async()=>{
+    try{
+      const res = await short.get('/getMenu');
+      console.log(res.data)
+      foods.value = res.data.data;
+      console.log(foods.value)
+    }catch(error){
+      console.error(error);
+    }
+  }
+  await menu();
   const loggedin = ref();
   loggedin.value = localStorage.getItem('name');
   if(loggedin.value){
@@ -18,9 +30,9 @@ onMounted(()=>{
   } else {
     skipNameInput.value = false;
   }
-  const foods = ref();
-  foods.value = JSON.parse(localStorage.getItem('food'));
-  if(foods.value){
+  const food = ref();
+  food.value = JSON.parse(localStorage.getItem('food'));
+  if(food.value){
     Isicart.value = true;
   } else {
     Isicart.value = false;
@@ -42,17 +54,6 @@ onMounted(()=>{
 function move() {
   window.location.href = '/order';
 }
-
-const foods = [
-  { name: 'Tahu Bakso isi 5', price: 15000, pic: '/img/tahu.jpg', category: 'Favorites' },
-  { name: 'Gyoza isi 5', price: 15000, pic: '/img/gyioza.jpg', category: 'Best Seller' },
-  { name: 'Siomay Goreng isi 10', price: 20000, pic: '/img/IMG_20250108_125103.jpg', category: 'Favorites' },
-  { name: 'Lumpia Kulit Tahu isi 5', price: 15000, pic: '/img/lumpia.jpg', category: 'Best Seller' },
-  { name: 'Lumpia Ayam isi 10', price: 30000, pic: '/img/IMG_20250108_130259.jpg', category: 'Favorites' },
-  { name: 'Sempol Ayam isi 10', price: 20000, pic: '/img/IMG_20250108_125006.jpg', category: 'Best Seller' },
-  { name: 'Tahu Walik isi 10', price: 20000, pic: '/img/IMG_20250108_131446.jpg', category: 'ALL' },
-  { name: 'Odeng 1 cup', price: 15000, pic: '/img/IMG_20250108_130357.jpg', category: 'ALL' },
-];
 
 const input = async()=>{
   username.value = localStorage.getItem('name');
