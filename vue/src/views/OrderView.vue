@@ -38,12 +38,43 @@ async function checkout() {
       amount: total.value, 
     });
     const snapToken = res.data.snap_token;
+    
+          const name = localStorage.getItem('name');
+          const foods = JSON.parse(localStorage.getItem('food') || '[]');
+          let message = `Halo, saya ${name}. Saya telah berhasil melakukan pembayaran. Berikut pesanan saya:\n\n`;
+          foods.forEach((food, index) => {
+            message += `${index + 1}. ${food.foodtype} - ${food.count} pcs\n`;
+          });
+
+          message += `\nTotal: RP ${total.value}\nTerima kasih!`;
+
+          // Open WhatsApp chat in a new tab
+          const phone = "6285604311017"; // Replace with your business WhatsApp number
+          const whatsappURL = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+          window.open(whatsappURL, "_blank");
+
     if (snapToken) {
       // Step 2: Trigger the Midtrans payment popup
       snap.pay(snapToken, {
         onSuccess: (result) => {
           console.log('Payment Success:', result);
           alert('Silahkan ambil pesanan anda sekitar 30 menit setelah pembelian');
+
+          // const name = localStorage.getItem('name');
+          // const foods = JSON.parse(localStorage.getItem('food') || '[]');
+          // let message = `Halo, saya ${name}. Saya telah berhasil melakukan pembayaran. Berikut pesanan saya:\n\n`;
+          // foods.forEach((food, index) => {
+          //   message += `${index + 1}. ${food.foodtype} - ${food.count} pcs\n`;
+          // });
+
+          // message += `\nTotal: RP ${total.value}\nTerima kasih!`;
+
+          // // Open WhatsApp chat in a new tab
+          // const phone = "6285604311017"; // Replace with your business WhatsApp number
+          // const whatsappURL = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+          // window.open(whatsappURL, "_blank");
+
+          addToDatabase()
           localStorage.removeItem('food');
           localStorage.removeItem('name');
           orderedFoods.value = [];
@@ -67,6 +98,30 @@ async function checkout() {
     alert('An error occurred during checkout. Please try again.');
   }
 }
+
+async function addToDatabase() {
+  try {
+    const name = localStorage.getItem('name'); // Get user name
+    const foods = JSON.parse(localStorage.getItem('food') || '[]');
+
+    if (!name || foods.length === 0) {
+      alert("No items in cart or user not found.");
+      return;
+    }
+
+    const orderData = {
+      user: name, // User name (backend will find user_id)
+      menu: foods.map(food => food.foodtype), // Extract food names
+      quantity: foods.map(food => food.count) // Extract quantities
+    };
+
+    await short.post('/order', orderData);
+
+  } catch (error) {
+    console.error('Order Error:', error);
+    alert('An error occurred while placing your order.');
+  }
+}
 </script>
 
 
@@ -74,8 +129,9 @@ async function checkout() {
 <div class="dashboard-order">
   <h3>Order Menu</h3>
   <div class="order-address">
-      <h4>PillarTasty Address</h4>
-      <h4>Jl. Gunung Anyar Harapan ZA-25, Surabaya</h4>
+      <h4>HARAP BACA SEBELUM MEMESAN</h4>
+      <h4>Transfer terlebih dahulu lalu datang ke lokasi untuk mengambil pesanan anda</h4>
+      <h4>JANGAN LUPA BAWA BUKTI TRANSAKSI</h4>
   </div>
    <div class="order-time">
       <span class="fas fa-clock"></span> Estimasi matang : 30 mins 

@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Menu;
+use App\Models\User;
+use App\Models\Orders;
 use App\Models\Checkout;
+use App\Models\OrderItems;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use App\Services\MidtransService;
+use Illuminate\Support\Facades\Http;
 
 class CheckoutController extends Controller
 {
@@ -30,9 +34,42 @@ class CheckoutController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request){
+        $input = $request->validate([
+            'user' => ['required'],
+            'menu' => ['required', 'array'],
+            'quantity' => ['required', 'array']
+        ]);
+
+        $user_id = User::where('name', $input['user'])->first();
+        $order = Orders::create([
+            'user_id' => $user_id->id
+        ]);
+
+        if (count($input['menu']) !== count($input['quantity'])) {
+            return response()->json(['message' => 'Menu and quantity mismatch'], 400);
+        }
+    
+        // Loop through each menu item and store in order_items
+        foreach ($input['menu'] as $index => $menuName) {
+            // Find the product ID from the 'menus' table
+            $menu = Menu::where('name', $menuName)->first();
+    
+            if (!$menu) {
+                return response()->json(['message' => "Menu item '$menuName' not found"], 404);
+            }
+    
+            OrderItems::create([
+                'order_id' => $order->id,
+                'menu_id' => $menu->id, // Store product ID
+                'quantity' => $input['quantity'][$index]
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'berhasil masuk datanya',
+            'order_id' => $order->id
+        ]);
     }
 
     /**

@@ -13,7 +13,5 @@ Route::get('/user', function (Request $request) {
 Route::post('/userdata', [OrderController::class,'login']);
 Route::get('/getMenu', [OrderController::class,'getMenu']);
 
-// Route::post('/payments', [CheckoutController::class, 'createPayment']);
-// Route::post('/webhook', [CheckoutController::class, 'handleWebhook'])->name('payment.callback');
-
 Route::post('/create-transaction', [CheckoutController::class, 'createTransaction']);
+Route::post('/makeOrder', [CheckoutController::class, 'store']);
