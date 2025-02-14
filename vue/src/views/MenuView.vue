@@ -10,35 +10,76 @@ const foods = ref([]);
 const selectedCategory = ref('ALL');
 const foodCount = ref();
 const Isicart = ref(false);
+const loggedin = ref();
+const food = ref();
+const adminCheck = ref(false);
+const confirmAction = ref(null); 
+const adminOutput = ref();
+const tambah = ref(false);
+const updateWindow = ref(false);
+const selectedFile = ref(null);
+const nameInput = ref();
+const priceInput = ref();
+const categoryInput = ref();
+const updatenameinput = ref();
+const updatepriceinput = ref();
 
-onMounted(async()=>{
-  const menu = async()=>{
+const handleFileUpload = (event) => {
+  selectedFile.value = event.target.files[0];
+  console.log('Selected file:', selectedFile.value);
+};
+
+const addmenu = async()=>{
+  const formData = new FormData();
+  
+  formData.append('name', nameInput.value);
+  formData.append('price', priceInput.value);
+  formData.append('category', categoryInput.value);
+  formData.append('pic', selectedFile.value);
+  try {
+    const res = await short.post('/createMenu', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    console.log(res);
+  } catch (error) {
+    console.error(error);
+  }
+  getMenu()
+};
+
+const getMenu = async()=>{
     try{
       const res = await short.get('/getMenu');
-      console.log(res.data)
       foods.value = res.data.data;
-      console.log(foods.value)
     }catch(error){
       console.error(error);
     }
-  }
-  await menu();
-  const loggedin = ref();
+}
+
+onMounted(async()=>{
+  
+  await getMenu();
+  
   loggedin.value = localStorage.getItem('name');
   if(loggedin.value){
     skipNameInput.value = true;
   } else {
     skipNameInput.value = false;
   }
-  const food = ref();
   food.value = JSON.parse(localStorage.getItem('food'));
   if(food.value){
     Isicart.value = true;
   } else {
     Isicart.value = false;
   }
+  adminCheck.value = localStorage.getItem('admin');
+  console.log(adminCheck.value);
+  
   username.value = localStorage.getItem('name');
   if(username.value !== null){
+    if(adminCheck){
+      return
+    }
     const getFoods = JSON.parse(localStorage.getItem('food'));
     const totalCount = getFoods
       .filter(item => item.name === username.value)
@@ -51,10 +92,6 @@ onMounted(async()=>{
   }
 })
 
-function move() {
-  window.location.href = '/order';
-}
-
 const input = async()=>{
   username.value = localStorage.getItem('name');
   try{
@@ -63,30 +100,43 @@ const input = async()=>{
     });
     registered.value = true;
     localStorage.setItem('name', res.data.data.name);
+    adminCheck.value = res.data.data.is_admin;
+    localStorage.setItem('admin', adminCheck.value);
   }catch(error){
     console.error(error);
   }
 }
 
-function masukkanMakananKeOrder(food, price, pic) {
+function masukkanMakananKeOrder(name, price, pic) {
+  if(adminCheck.value){
+    adminOutput.value = name
+  }
+  
   const modal = document.getElementById('confirmationModal');
   modal.style.display = 'flex';
   document.body.classList.add('modal-open'); 
 
-  document.getElementById('confirmYes').onclick = async() => {
-    if(nameinput.value === null && !skipNameInput || nameinput.value === '' && !skipNameInput){
-      alert('isi nama dahulu');
-      return
+  confirmAction.value = async () => {
+    if (nameinput.value === null && !skipNameInput.value || nameinput.value === '' && !skipNameInput.value) {
+      alert('Isi nama dahulu');
+      return;
     }
-
+    
     await input();
+    
+    if (adminCheck.value) {
+      modal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+      skipNameInput.value = true;
+      return;
+    }
     
     username.value = localStorage.getItem('name');
     const getFoods = JSON.parse(localStorage.getItem('food')) || [];
-    const findFoods = getFoods.find((item) => item.name === username.value && item.foodtype === food);
+    const findFoods = getFoods.find((item) => item.name === username.value && item.foodtype === name);
 
     if (!findFoods) {
-      getFoods.push({ name: username.value, foodtype: food, price: price, pic: pic, count: 1 });
+      getFoods.push({ name: username.value, foodtype: name, price: price, pic: pic, count: 1 });
     } else {
       findFoods.count += 1;
     }
@@ -94,43 +144,124 @@ function masukkanMakananKeOrder(food, price, pic) {
     localStorage.setItem('food', JSON.stringify(getFoods));
 
     const totalCount = getFoods
-    .filter(item => item.name === username.value)
-    .reduce((sum, item) => sum + parseInt(item.count, 10), 0);
+      .filter((item) => item.name === username.value)
+      .reduce((sum, item) => sum + parseInt(item.count, 10), 0);
 
     foodCount.value = totalCount;
     Isicart.value = true;
     skipNameInput.value = true;
 
     modal.style.display = 'none';
-    document.body.classList.remove('modal-open'); 
+    document.body.classList.remove('modal-open');
   };
+}
 
-  document.getElementById('confirmNo').onclick = () => {
+const confirmYes = () => {
+  if (confirmAction.value) {
+    confirmAction.value();
+  }
+};
+
+const confirmNo = () => {
+  const modal = document.getElementById('confirmationModal');
+  modal.style.display = 'none';
+  updateWindow.value = false;
+  document.body.classList.remove('modal-open');
+};
+
+const deleteFood = async(name)=>{
+  const modal = document.getElementById('confirmationModal');
+  try{
+    await short.delete(`/deleteMenu/${name}`);
     modal.style.display = 'none';
     document.body.classList.remove('modal-open'); 
-  };
+    getMenu()
+  }catch(error){
+    console.error(error);
+    
+  }
+}
+
+const updateFood = async(name)=>{
+  const modal = document.getElementById('confirmationModal');
+  try{
+    await short.put(`/updateMenu/${name}`, {
+      'name': updatenameinput.value,
+      'price': updatepriceinput.value
+    });
+    modal.style.display = 'none';
+    document.body.classList.remove('modal-open'); 
+    getMenu()
+  }catch(error){
+    console.error(error);
+  }
 }
 
 function filterFoods(category) {
   selectedCategory.value = category;
+}
+
+const update = ()=>{
+  const modal = document.getElementById('confirmationModal');
+  updateWindow.value = true;
+  modal.style.display = 'flex'
 }
 </script>
 
 <template>
   <body>
 
-<div id="confirmationModal" class="modal">
+<div v-if="adminCheck == 0 | !adminCheck" id="confirmationModal" class="modal">
   <div class="modal-content">
     <p>Do you want to add this item to the cart?</p>
     <div v-if="!skipNameInput">
     <input style="margin: 20px 0 0; border: 1px solid black; padding: 5px;" type="text" 
     placeholder="name..." v-model="nameinput">
     </div>
-    <button id="confirmYes">Yes</button>
-    <button id="confirmNo">No</button>
+    <button @click.prevent="confirmYes" class="confirmYes">Yes</button>
+    <button @click.prevent="confirmNo" class="confirmNo">No</button>
   </div>
 </div>
 
+
+<div v-if="adminCheck == 1" id="confirmationModal" class="modal">
+  <div class="modal-content">
+    <p>{{adminOutput}}</p>
+    <div v-if="!skipNameInput">
+    <input style="margin: 20px 0 0; border: 1px solid black; padding: 5px;" type="text" 
+    placeholder="name..." v-model="nameinput">
+    </div>
+
+    <div v-if="!updateWindow">
+      <button class="confirmYes" @click.prevent="update">update menu</button>
+      <button class="confirmNo" @click.prevent="deleteFood(adminOutput)">delete menu</button>
+    </div>
+
+    <div v-else style="
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin: 7% 0 0 25%;
+    ">
+      <label for="text">food name</label>
+      <input type="text" v-model="updatenameinput" placeholder="dumpling..." style="border: 1px solid black;">
+      <label for="number">price</label>
+      <input type="number" placeholder="15000" v-model="updatepriceinput" style="border: 1px solid black;">
+      <button class="confirmYes" @click.prevent="updateFood(adminOutput)">update</button>
+      <button class="confirmNo" @click.prevent="confirmNo">cancel</button>
+    </div>
+  </div>
+</div>
+
+<div v-if="adminCheck == 1 && updateWindow == true" id="confirmationModal" class="modal">
+  <div class="modal-content">
+    <p>{{adminOutput}}</p>
+    <div v-if="!skipNameInput">
+    <input style="margin: 20px 0 0; border: 1px solid black; padding: 5px;" type="text" 
+    placeholder="name..." v-model="nameinput">
+    </div>
+  </div>
+</div>
 
     <div class="dashboard">
           <div class="dashboard-banner">
@@ -156,17 +287,54 @@ function filterFoods(category) {
             <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
           </div>
         </div>
+        <div v-if="adminCheck == 1" class="dashboard-card" style="align-items: center; align-content: center; text-align: center;" @click.prevent="tambah = true">
+        <p v-if="!tambah">
+          tambah menu +
+        </p>
+        <div style="
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        align-items: center;
+        margin: 5% 0 0 25% ;
+        "
+        v-if="tambah">
+          <label for="text">Food name</label>
+          <input type="text" v-model="nameInput" placeholder="dumpling...">
+          <label for="int">Food price</label>
+          <input type="number" v-model="priceInput" placeholder="15000">
+          <label for="select">Category</label>
+          <select v-model="categoryInput">
+            <option value="All">All</option>
+            <option value="Favorites">Favorites</option>
+            <option value="Best Seller">Best Seller</option>
+          </select>
+          <label for="file-upload">Upload Image</label>
+          <input id="file-upload" type="file" @click.stop @change="handleFileUpload">
+          <button class="addbtn" @click.prevent="addmenu">add</button>
+        </div>
+        </div>
       </div>
     </div>
 
     <div class="shopping_button" v-if="Isicart">
-      <div>shopping cart</div> items - {{ foodCount }} <button @click.prevent="move" class="thebtn">cart</button>
+      <div>shopping cart</div> items - {{ foodCount }} <a href="/order" class="thebtn">cart</a>
     </div>
 
   </body>
 </template>
 
 <style scoped>
+.addbtn{
+  padding: 3px 15px;
+  border: 1px solid black;
+  cursor: pointer;
+}
+.addbtn:hover{
+  color: white;
+  background-color: #df113c;
+  transition: 300ms;
+}
 .shopping_button{
   display: flex;
   justify-content:space-around;
@@ -237,21 +405,21 @@ body.modal-open {
   border-radius: 5px;
 }
 
-button#confirmYes {
+button.confirmYes {
   background-color: #28a745;
   color: white;
 }
-button#confirmYes:hover {
+button.confirmYes:hover {
   background-color: #008d21;
   color: white;
   transition: 300ms;
 }
 
-button#confirmNo {
+button.confirmNo {
   background-color: #dc3545;
   color: white;
 }
-button#confirmNo:hover {
+button.confirmNo:hover {
   background-color: #c10013;
   color: white;
   transition: 300ms;

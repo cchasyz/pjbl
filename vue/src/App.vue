@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router';
 const isHome = ref(false);
 const isMenu = ref(false);
 const isOrder = ref(false);
+const adminCheck = ref(false);
 
 const orders = localStorage.getItem('food');
 
@@ -36,6 +37,7 @@ watch(
 
 onMounted(() => {
   feather.replace();
+  adminCheck.value = localStorage.getItem('admin');
 });
 </script>
 
@@ -63,14 +65,13 @@ onMounted(() => {
       <div class="navbar-nav">
         <a href="/"> Home </a>
         <a v-if="orders" href="/order"> orders </a>
-        <!-- <a href="#about"> tentang kami </a> -->
-        <!-- <a href="/menu"> menu </a> -->
-        <!-- <a href="#contact"> kontak </a> -->
+        <a v-if="adminCheck == 1" href="/orders"> orders </a>
       </div>
 
       <div class="navbar-extra">
         <a href="/menu" id="search"><i data-feather="book-open"></i></a>
-        <a href="/order" id="shopping-cart"><i data-feather="shopping-cart"></i></a>
+        <a v-if="!adminCheck" href="/order" id="shopping-cart"><i data-feather="shopping-cart"></i></a>
+        <a v-if="adminCheck" href="/orders" id="shopping-cart"><i data-feather="shopping-cart"></i></a>
       </div>
     </nav>
 

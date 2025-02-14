@@ -38,7 +38,14 @@ async function checkout() {
       amount: total.value, 
     });
     const snapToken = res.data.snap_token;
-    
+
+    if (snapToken) {
+      // Step 2: Trigger the Midtrans payment popup
+      snap.pay(snapToken, {
+        onSuccess: (result) => {
+          console.log('Payment Success:', result);
+          alert('Silahkan ambil pesanan anda sekitar 30 menit setelah pembelian');
+
           const name = localStorage.getItem('name');
           const foods = JSON.parse(localStorage.getItem('food') || '[]');
           let message = `Halo, saya ${name}. Saya telah berhasil melakukan pembayaran. Berikut pesanan saya:\n\n`;
@@ -48,31 +55,9 @@ async function checkout() {
 
           message += `\nTotal: RP ${total.value}\nTerima kasih!`;
 
-          // Open WhatsApp chat in a new tab
           const phone = "6285604311017"; // Replace with your business WhatsApp number
           const whatsappURL = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
           window.open(whatsappURL, "_blank");
-
-    if (snapToken) {
-      // Step 2: Trigger the Midtrans payment popup
-      snap.pay(snapToken, {
-        onSuccess: (result) => {
-          console.log('Payment Success:', result);
-          alert('Silahkan ambil pesanan anda sekitar 30 menit setelah pembelian');
-
-          // const name = localStorage.getItem('name');
-          // const foods = JSON.parse(localStorage.getItem('food') || '[]');
-          // let message = `Halo, saya ${name}. Saya telah berhasil melakukan pembayaran. Berikut pesanan saya:\n\n`;
-          // foods.forEach((food, index) => {
-          //   message += `${index + 1}. ${food.foodtype} - ${food.count} pcs\n`;
-          // });
-
-          // message += `\nTotal: RP ${total.value}\nTerima kasih!`;
-
-          // // Open WhatsApp chat in a new tab
-          // const phone = "6285604311017"; // Replace with your business WhatsApp number
-          // const whatsappURL = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-          // window.open(whatsappURL, "_blank");
 
           addToDatabase()
           localStorage.removeItem('food');
